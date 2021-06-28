@@ -1,6 +1,6 @@
-import SceneRenderer from './SceneRenderer'
-import GameSceneLoader from './GameSceneLoader'
-import EngineCreator from './EngineCreator'
+import SceneRenderer from './render/SceneRenderer'
+import GameSceneLoader from './scenes/GameSceneLoader'
+import EngineCreator from './render/EngineCreator'
 
 const canvas =  document.getElementById('renderCanvas') 
 
