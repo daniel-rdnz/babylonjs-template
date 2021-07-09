@@ -24,7 +24,8 @@
   "author": "Daniel Ordoñez",
   "license": "ISC",
   "dependencies": {
-    "babylonjs": "^4.2.0"
+    "babylonjs": "^4.2.0",
+    "cannon": "^0.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

@@ -9,9 +9,9 @@ export const Engine = jest.fn().mockImplementation(() => {
 })
 
 export const attachControl = jest.fn()
-
-export const ArcRotateCamera = jest.fn().mockImplementation(() => {
-  return { attachControl }
+export const setTarget = jest.fn()
+export const UniversalCamera = jest.fn().mockImplementation(() => {
+  return { attachControl, setTarget }
 })
 
 export const HemisphericLight = jest.fn().mockImplementation(() => {
@@ -23,8 +23,9 @@ export const MeshBuilder = {
   CreateBox
 }
 
+export const Zero = jest.fn()
 export const Vector3 = jest.fn().mockImplementation(() => {
-  return {}
+  return { Zero }
 })
 
 export const Color3 = jest.fn().mockImplementation(() => {

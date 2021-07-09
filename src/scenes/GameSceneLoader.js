@@ -1,21 +1,34 @@
-import * as BABYLON from 'babylonjs'
+import { HemisphericLight, MeshBuilder, Vector3, PhysicsImpostor, Color3, CannonJSPlugin } from 'babylonjs'
+import Player from '../entities/Player'
+import * as cannon from 'cannon'
 
 export default class GameSceneLoader {
   constructor(canvas) {
     this.canvas = canvas
   }
   configureScene = (scene) => {
-    scene.ambientColor = new BABYLON.Color3(1, 1, 1)
-    scene.gravity = new BABYLON.Vector3(0, -0.75, 0)
+    const cannonPlugin = new CannonJSPlugin(true, 10, cannon)
+    const gravityVector = new Vector3(0, -0.75, 0)
+
     scene.collisionsEnabled = true
-    scene.enablePhysics()
+    scene.enablePhysics(gravityVector, cannonPlugin)
+
+    this.player = new Player(scene, this.canvas)
+    const myGround = MeshBuilder.CreateGround('myGround', { width: 200, height: 200, subdivsions: 4 }, scene)
+
+    myGround.position.y = -1
+    myGround.checkCollisions = true
+    myGround.physicsImpostor = new PhysicsImpostor(
+      myGround,
+      PhysicsImpostor.BoxImpostor,
+      { mass: 0, restitution: 0.5, friction: 0.1 },
+      scene
+    )
   }
+
   loadScene = (scene) => {
     this.configureScene(scene)
-    const camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0))
-    camera.attachControl(this.canvas, true)
-
-    const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0))
-    const box = BABYLON.MeshBuilder.CreateBox('box', {})
+    const light = new HemisphericLight('light', new Vector3(0, 1, 0))
+    const box = MeshBuilder.CreateBox('box', {})
   }
 }
