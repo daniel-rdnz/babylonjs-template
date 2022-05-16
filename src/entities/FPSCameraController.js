@@ -120,9 +120,10 @@ export default class FPSCameraController {
 
     camera.inertia = 0;
     camera.applyGravity = true
-    camera.ellipsoid = new Vector3(0.8, 0.8, 0.8)
+    camera.ellipsoid = new Vector3(1.0, 1.0, 1.0)
     camera.checkCollisions = true
     camera._needMoveForGravity = true
+    camera.angularSensibility = 500
     camera.keysUp = [87] // W
     camera.keysDown = [83] // S
     camera.keysLeft = [65] // A

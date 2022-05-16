@@ -19,12 +19,6 @@ export default class GameSceneLoader {
 
     myGround.position.y = -1
     myGround.checkCollisions = true
-  /*   myGround.physicsImpostor = new PhysicsImpostor(
-      myGround,
-      PhysicsImpostor.BoxImpostor,
-      { mass: 0, restitution: 0.5, friction: 0.1 },
-      scene
-    ) */
 
     const box = MeshBuilder.CreateBox('box', { size: 2 }, scene)
     box.checkCollisions = true
