@@ -1,5 +1,7 @@
 import { HemisphericLight, MeshBuilder, Vector3, PhysicsImpostor, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/Player'
+import Dungeon from '../entities/dungeon'
+import DynamicTerrain from '../entities/world/DynamicTerrain'
 import * as cannon from 'cannon'
 
 export default class GameSceneLoader {
@@ -15,13 +17,25 @@ export default class GameSceneLoader {
     scene.gravity = gravityVector
 
     this.player = new Player(scene, this.canvas)
-    const myGround = MeshBuilder.CreateGround('myGround', { width: 200, height: 200, subdivsions: 4 }, scene)
+    /*     const myGround = MeshBuilder.CreateGround('myGround', { width: 200, height: 200, subdivsions: 4 }, scene)
 
     myGround.position.y = -1
     myGround.checkCollisions = true
 
     const box = MeshBuilder.CreateBox('box', { size: 2 }, scene)
-    box.checkCollisions = true
+    box.checkCollisions = true */
+
+    //new Dungeon({ width: 300, height: 100, deepLevel: 3, scene})
+    const dynamicTerrain = new DynamicTerrain(scene)
+    
+    const camElevation = 2.0;
+    let camAltitude = 0.0;
+    scene.registerBeforeRender(() => {
+      if (dynamicTerrain.terrain) {
+        camAltitude = dynamicTerrain.terrain.getHeightFromMap(this.player.camera.position.x, this.player.camera.position.z) + camElevation
+        this.player.camera.position.y = camAltitude
+      }
+    })
   }
 
   loadScene = (scene) => {
