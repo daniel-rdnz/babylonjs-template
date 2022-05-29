@@ -1,7 +1,7 @@
 import { Vector3, Effect, PostProcess, FreeCamera, DefaultRenderingPipeline } from 'babylonjs'
 
 export default class FPSCameraController {
-  constructor(scene, canvas, withCrtEffect = false, withGrain = true, withPixelated = false) {
+  constructor(scene, canvas, withCrtEffect = true, withGrain = true, withPixelated = false) {
     this.scene = scene
     this.canvas = canvas
     this._camera = this.setCamera(this.scene, this.camera)
@@ -28,7 +28,7 @@ export default class FPSCameraController {
   setGrain = (scene, camera) => {
     const pipeline = new DefaultRenderingPipeline('defaultPipeline', true, scene, [camera])
     pipeline.grainEnabled = true
-    pipeline.grain.intensity = 15
+    pipeline.grain.intensity = 35
     pipeline.grain.animated = true
   }
 
@@ -107,11 +107,11 @@ export default class FPSCameraController {
     )
     postProcess.onApply = function (effect) {
       effect.setFloat2('curvature', 10.0, 10.0)
-      effect.setFloat2('screenResolution', 480, 160)
+      effect.setFloat2('screenResolution', 180, 180)
       effect.setFloat2('scanLineOpacity', 1, 1)
       effect.setFloat('vignetteOpacity', 1)
-      effect.setFloat('brightness', 2)
-      effect.setFloat('vignetteRoundness', 2.0)
+      effect.setFloat('brightness', 1)
+      effect.setFloat('vignetteRoundness', 1.0)
     }
   }
 
@@ -119,7 +119,7 @@ export default class FPSCameraController {
     const camera = new FreeCamera('PlayerCamera', new Vector3(0, 20, 0), scene)
 
     camera.inertia = 0;
-    camera.applyGravity = true
+    camera.applyGravity = false
     camera.ellipsoid = new Vector3(1.0, 1.0, 1.0)
     camera.checkCollisions = true
     camera._needMoveForGravity = true

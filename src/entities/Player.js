@@ -17,11 +17,33 @@ export default class Player {
     this.FPSCameraController = new FPSCameraController(this.scene, this.canvas)
     this.camera = this.FPSCameraController.camera
     this.mouseController = new MouseController(this.scene, this.canvas)
+    this.setFlashLight()
     this.updatePlayer()
   }
 
+  setFlashLight = () => {
+    const spotLight = new BABYLON.SpotLight(
+      'flashLight',
+      new BABYLON.Vector3(0,  0, 1),
+      new BABYLON.Vector3(0, 0, 1),
+      Math.PI,
+      20,
+      this.scene
+    )
+    const lightTexture = new BABYLON.Texture(
+      'https://miro.medium.com/max/1000/1*vHH6EdKYFPTkKal-zKxK5Q.gif',
+      this.scene
+    )
+/*     lightTexture.uScale = 0
+    lightTexture.vScale = lightTexture.uScale  */
+    spotLight.projectionTexture = lightTexture
+    spotLight.intensity = 8
+    //spotLight.setDirectionToTarget(new BABYLON.Vector3(1, 0, 1));
+    spotLight.parent = this.camera
+  }
+
   updatePlayer = () => {
-   /*  this.scene.registerBeforeRender(() => {
+    /*  this.scene.registerBeforeRender(() => {
       this.FPSCameraController.updateCameraPosition(this.body)
     }) */
   }
