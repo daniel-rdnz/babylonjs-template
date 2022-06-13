@@ -1,6 +1,6 @@
 import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/Player'
-//import Dungeon from '../entities/dungeon'
+import IsoCameraController from '../entities/camera/IsoCameraController'
 import DynamicTerrain from '../entities/world/DynamicTerrain'
 import * as cannon from 'cannon'
 
@@ -10,27 +10,42 @@ export default class GameSceneLoader {
   }
 
   configureScene = (scene) => {
-    this.player = new Player(scene, this.canvas)
-
+    const withfog = false
     this.setPhysics(scene)
-    this.setAmbient(scene, { withfog: true })
+    this.setAmbient(scene, { withfog })
 
-    //new Dungeon({ width: 300, height: 100, deepLevel: 3, scene})
-    const dynamicTerrain = new DynamicTerrain(scene)
+    new DynamicTerrain(scene)
 
-    const camElevation = 2.0
-    let camAltitude = 0.0
+    const guy = BABYLON.Mesh.CreatePlane('', 4, scene)
+    guy.billboardMode = BABYLON.Mesh.BILLBOARDMODE_Y
+    const guyTexture = new BABYLON.Texture(
+      'assets/images/bath-guy-anim.png',
+      this.scene,
+      false,
+      true,
+      BABYLON.Texture.NEAREST_SAMPLINGMODE
+    )
+    let gameFrame = 0
+    guyTexture.hasAlpha = true
+    guyTexture.uScale = 1 / 6
+    guyTexture.vScale = 1 / 6
+    guyTexture.uOffset = 0
+    guyTexture.vOffset = 5 / 6
+    const guyMaterial = new BABYLON.StandardMaterial('guyM', this.scene)
+    guyMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHATESTANDBLEND
+    guyMaterial.useAlphaFromDiffuseTexture = true
+    guyMaterial.diffuseTexture = guyTexture
+    guyMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
+    guy.material = guyMaterial
+    
+    const staggerFrame = 5
+
+    this.player = new Player(scene, this.canvas, { Camera: IsoCameraController, graphics: guy })
     scene.registerBeforeRender(() => {
-      if (dynamicTerrain.terrain) {
-        camAltitude =
-          dynamicTerrain.terrain.getHeightFromMap(this.player.camera.position.x, this.player.camera.position.z) +
-          camElevation
-        this.player.camera.position.y = camAltitude
-        this.fogEmiter.position.x = this.player.camera.position.x
-        this.fogEmiter.position.y = this.player.camera.position.y - 2
-        this.fogEmiter.position.z = this.player.camera.position.z
-        
-      }
+      gameFrame++
+      const frame = Math.floor(gameFrame / staggerFrame ) % 4
+      //console.log(delta, frame)
+      guyTexture.uOffset = frame / 6
     })
   }
 
@@ -44,10 +59,10 @@ export default class GameSceneLoader {
   }
 
   setAmbient = (scene, { withfog = false }) => {
-    /*   const light = new HemisphericLight('light', new Vector3(0, 1, 0))
+    const light = new HemisphericLight('light', new Vector3(0, 1, 0))
     light.intensity = 0.8
-    light.groundColor = new BABYLON.Color3(0.8, 0, 0)
-    light.diffuse = new BABYLON.Color3(0.5, 0.8, 0.6) */
+    //light.groundColor = new BABYLON.Color3(0.8, 0, 0)
+    //light.diffuse = new BABYLON.Color3(0.5, 0.8, 0.6)
 
     if (withfog) {
       // Fog
@@ -83,9 +98,8 @@ export default class GameSceneLoader {
       particleSystem.minEmitPower = 0.1
       particleSystem.maxEmitPower = 0.5
       particleSystem.updateSpeed = 0.05
-      particleSystem.minLifeTime = 0.5;
-      particleSystem.maxLifeTime = 2; 
-      
+      particleSystem.minLifeTime = 0.5
+      particleSystem.maxLifeTime = 2
 
       // Where the sun particles come from
       const sunEmitter = new BABYLON.HemisphericParticleEmitter()
@@ -94,9 +108,8 @@ export default class GameSceneLoader {
 
       // Assign particles to emitters
       //const coreSphere = BABYLON.MeshBuilder.CreateSphere('coreSphere', { diameter: 2.01, segments: 64 }, scene)
-      
-      
-      const fountain = BABYLON.Mesh.CreateBox("foutain", 4, scene);
+
+      const fountain = BABYLON.Mesh.CreateBox('foutain', 4, scene)
       particleSystem.emitter = fountain
       particleSystem.particleEmitterType = sunEmitter
 

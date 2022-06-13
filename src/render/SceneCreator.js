@@ -6,7 +6,7 @@ export default class SceneCreator {
   }
 
   createScene = () => {
-    window.addEventListener('resize', function () {
+    window.addEventListener('resize', () => {
       this.engine.resize()
     })
     return new Scene(this.engine)

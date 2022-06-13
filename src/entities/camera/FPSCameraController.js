@@ -1,12 +1,13 @@
 import { Vector3, Effect, PostProcess, FreeCamera, DefaultRenderingPipeline } from 'babylonjs'
 
 export default class FPSCameraController {
-  constructor(scene, canvas, withCrtEffect = true, withGrain = true, withPixelated = false) {
+  constructor(scene, canvas, settings = { withCrtEffect : false, withGrain : false, withPixelated : false }) {
     this.scene = scene
     this.canvas = canvas
     this._camera = this.setCamera(this.scene, this.camera)
+    const { withCrtEffect, withGrain, withPixelated, withFlashLight } = settings
 
-    if(withPixelated) {
+    if (withPixelated) {
       this.setPixelated(this._camera)
     }
     if (withGrain) {
@@ -14,7 +15,10 @@ export default class FPSCameraController {
     }
     if (withCrtEffect) {
       this.setCrtEffet(this._camera)
-    } 
+    }
+    if (withFlashLight) {
+      this.setFlashLight(this._camera)
+    }
   }
 
   setPixelated = (camera) => {
@@ -115,10 +119,29 @@ export default class FPSCameraController {
     }
   }
 
+  setFlashLight = (camera) => {
+    const spotLight = new BABYLON.SpotLight(
+      'flashLight',
+      new BABYLON.Vector3(0, 0, 1),
+      new BABYLON.Vector3(0, 0, 1),
+      Math.PI,
+      20,
+      this.scene
+    )
+    const lightTexture = new BABYLON.Texture(
+      'https://miro.medium.com/max/1000/1*vHH6EdKYFPTkKal-zKxK5Q.gif',
+      this.scene
+    )
+    spotLight.projectionTexture = lightTexture
+    spotLight.intensity = 8
+    spotLight.parent = camera
+    console.log('LIGHT')
+  }
+
   setCamera = (scene, canvas) => {
     const camera = new FreeCamera('PlayerCamera', new Vector3(0, 20, 0), scene)
 
-    camera.inertia = 0;
+    camera.inertia = 0
     camera.applyGravity = false
     camera.ellipsoid = new Vector3(1.0, 1.0, 1.0)
     camera.checkCollisions = true
@@ -133,6 +156,8 @@ export default class FPSCameraController {
 
     return camera
   }
+
+ 
 
   updateCameraPosition = (body) => {
     /* this.camera.position.x = body.position.x
