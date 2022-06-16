@@ -1,5 +1,5 @@
 import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
-import Player from '../entities/Player'
+import Player from '../entities/player'
 import IsoCameraController from '../entities/camera/IsoCameraController'
 import DynamicTerrain from '../entities/world/DynamicTerrain'
 import * as cannon from 'cannon'
@@ -40,7 +40,7 @@ export default class GameSceneLoader {
     
     const staggerFrame = 5
 
-    this.player = new Player(scene, this.canvas, { Camera: IsoCameraController, graphics: guy })
+    this.player = new Player(scene, this.canvas, { Camera: IsoCameraController, graphics: guy, speed: 0.05 })
     scene.registerBeforeRender(() => {
       gameFrame++
       const frame = Math.floor(gameFrame / staggerFrame ) % 4
