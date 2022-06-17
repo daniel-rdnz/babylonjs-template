@@ -3,8 +3,8 @@ import MouseController from './MouseController'
 import MoveController from './MoveController'
 
 export default class Player {
-  constructor(scene, canvas, settings = { speed: 0.05 }) {
-    const { speed } = settings
+  constructor(scene, canvas, settings = { speed: 0.1 }) {
+    const { speed, animator } = settings
     this.scene = scene
     this.canvas = canvas
     this.camera = null
@@ -13,6 +13,7 @@ export default class Player {
     this.mouseController = null
     this.cameraController = null
     this.settings = settings
+    this.animator= animator
     this.initializePlayer()
 
     scene.registerBeforeRender(() => {
@@ -22,7 +23,7 @@ export default class Player {
 
   initializePlayer = () => {
     this.createBody()
-    this.settings.graphics.parent = this.body
+    this.animator.parent = this.body
     this.cameraController = new IsoCameraController(this.scene, this.canvas, {
       target: this.body
     })
@@ -38,9 +39,13 @@ export default class Player {
   }
 
   move = (speed) => {
-    if (this.moveController) {
+    if (this.moveController?.direction.x || this.moveController?.direction.z) {
+      this.animator.animation = 'walk'
       this.body.position.x += this.moveController.direction.x * speed
       this.body.position.z += this.moveController.direction.z * speed
+      return false
     }
+
+    this.animator.animation = 'idle'
   }
 }

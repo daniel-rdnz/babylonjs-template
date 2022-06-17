@@ -1,0 +1,14 @@
+{
+  "animations": {
+    "idle": {
+      "frames": [0],
+      "row": 5
+    },
+    "walk": {
+      "frames": [0, 1, 2, 3],
+      "row": 5
+    }
+  },
+  "columns": 6,
+  "rows": 6
+}

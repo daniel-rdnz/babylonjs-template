@@ -1,8 +1,9 @@
 import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/player'
-import IsoCameraController from '../entities/camera/IsoCameraController'
 import DynamicTerrain from '../entities/world/DynamicTerrain'
 import * as cannon from 'cannon'
+import Animator from '../entities/animator'
+import playerSpriteMap from '../assets/maps/player.json'
 
 export default class GameSceneLoader {
   constructor(canvas) {
@@ -10,43 +11,20 @@ export default class GameSceneLoader {
   }
 
   configureScene = (scene) => {
-    const withfog = false
+    const withfog = 
+    
     this.setPhysics(scene)
     this.setAmbient(scene, { withfog })
 
     new DynamicTerrain(scene)
-
-    const guy = BABYLON.Mesh.CreatePlane('', 4, scene)
-    guy.billboardMode = BABYLON.Mesh.BILLBOARDMODE_Y
-    const guyTexture = new BABYLON.Texture(
-      'assets/images/bath-guy-anim.png',
-      this.scene,
-      false,
-      true,
-      BABYLON.Texture.NEAREST_SAMPLINGMODE
-    )
-    let gameFrame = 0
-    guyTexture.hasAlpha = true
-    guyTexture.uScale = 1 / 6
-    guyTexture.vScale = 1 / 6
-    guyTexture.uOffset = 0
-    guyTexture.vOffset = 5 / 6
-    const guyMaterial = new BABYLON.StandardMaterial('guyM', this.scene)
-    guyMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHATESTANDBLEND
-    guyMaterial.useAlphaFromDiffuseTexture = true
-    guyMaterial.diffuseTexture = guyTexture
-    guyMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
-    guy.material = guyMaterial
-    
-    const staggerFrame = 5
-
-    this.player = new Player(scene, this.canvas, { Camera: IsoCameraController, graphics: guy, speed: 0.05 })
-    scene.registerBeforeRender(() => {
-      gameFrame++
-      const frame = Math.floor(gameFrame / staggerFrame ) % 4
-      //console.log(delta, frame)
-      guyTexture.uOffset = frame / 6
+    const guy = new Animator(scene, {
+      texture: 'assets/images/bath-guy-anim.png',
+      name: 'guy', 
+      size: 4, 
+      staggerFrame: 5, 
+      spriteMap: playerSpriteMap
     })
+    this.player = new Player(scene, this.canvas, { animator: guy, speed: 0.1 })
   }
 
   setPhysics(scene) {
