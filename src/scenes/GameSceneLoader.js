@@ -18,10 +18,9 @@ export default class GameSceneLoader {
 
     new DynamicTerrain(scene)
     const guy = new Animator(scene, {
-      texture: 'assets/images/bath-guy-anim.png',
+      textureUrl: 'assets/images/bath-guy-anim.png',
       name: 'guy', 
-      size: 4, 
-      staggerFrame: 5, 
+      size: 4,  
       spriteMap: playerSpriteMap
     })
     this.player = new Player(scene, this.canvas, { animator: guy, speed: 0.1 })
