@@ -1,10 +1,13 @@
 import IsoCameraController from '../camera/IsoCameraController'
 import MouseController from './MouseController'
 import MoveController from './MoveController'
+import Animator from '../animator'
+import playerSpriteMap from '../../assets/maps/player.json'
+import noise from '../../utils/Noise'
 
 export default class Player {
   constructor(scene, canvas, settings = { speed: 0.1 }) {
-    const { speed, animator } = settings
+    const { speed } = settings
     this.scene = scene
     this.canvas = canvas
     this.camera = null
@@ -12,17 +15,24 @@ export default class Player {
     this.moveController = null
     this.mouseController = null
     this.cameraController = null
-    this.settings = settings
-    this.animator= animator
+    this.animator = null
     this.initializePlayer()
+    let step = 0
 
     scene.registerBeforeRender(() => {
-      this.move(speed)
+      step++
+      this.move(speed, step)
     })
   }
 
   initializePlayer = () => {
     this.createBody()
+    this.animator = new Animator(this.scene, {
+      textureUrl: 'assets/images/bath-guy-anim.png',
+      name: 'guy',
+      size: 4,
+      spriteMap: playerSpriteMap
+    })
     this.animator.parent = this.body
     this.cameraController = new IsoCameraController(this.scene, this.canvas, {
       target: this.body
@@ -38,14 +48,22 @@ export default class Player {
     this.body.visibility = 0
   }
 
-  move = (speed) => {
+  move = (speed, step) => {
+    const noiseDir = Math.random() > 0.5 ? 1 : -1
+    noise.seed(0.6)
+    const zoom = 16
+    const perlin = noise.simplex2(step / zoom, step / zoom)
+    const noiseX = noiseDir * (perlin > 0.5 ? perlin : 0) * 3
+    const noiseZ = noiseDir * (perlin > 0.5 ? perlin : 0) * 3
     if (this.moveController?.direction.x || this.moveController?.direction.z) {
       this.animator.animation = 'walk'
-      this.body.position.x += this.moveController.direction.x * speed
-      this.body.position.z += this.moveController.direction.z * speed
+      this.body.position.x += this.moveController.direction.x * speed + noiseX
+      this.body.position.z += this.moveController.direction.z * speed + noiseZ
       return false
     }
 
+    this.body.position.x += (this.moveController.direction.x + noiseX) * speed
+    this.body.position.z += (this.moveController.direction.z + noiseZ) * speed
     this.animator.animation = 'idle'
   }
 }

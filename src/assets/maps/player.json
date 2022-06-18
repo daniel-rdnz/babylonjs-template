@@ -1,13 +1,13 @@
 {
   "animations": {
     "idle": {
-      "frames": [0, 1, 2],
-      "staggerFrame": 10,
+      "frames": [0, 1, 2, 3],
+      "staggerFrame": 15,
       "row": 4
     },
     "walk": {
-      "frames": [0, 1, 2, 3],
-      "staggerFrame": 5,
+      "frames": [0, 1, 2],
+      "staggerFrame": 8,
       "row": 5
     }
   },

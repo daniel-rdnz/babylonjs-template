@@ -2,8 +2,6 @@ import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/player'
 import DynamicTerrain from '../entities/world/DynamicTerrain'
 import * as cannon from 'cannon'
-import Animator from '../entities/animator'
-import playerSpriteMap from '../assets/maps/player.json'
 
 export default class GameSceneLoader {
   constructor(canvas) {
@@ -17,13 +15,8 @@ export default class GameSceneLoader {
     this.setAmbient(scene, { withfog })
 
     new DynamicTerrain(scene)
-    const guy = new Animator(scene, {
-      textureUrl: 'assets/images/bath-guy-anim.png',
-      name: 'guy', 
-      size: 4,  
-      spriteMap: playerSpriteMap
-    })
-    this.player = new Player(scene, this.canvas, { animator: guy, speed: 0.1 })
+   
+    this.player = new Player(scene, this.canvas, { speed: 0.1 })
   }
 
   setPhysics(scene) {

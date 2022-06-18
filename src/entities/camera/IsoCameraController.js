@@ -15,7 +15,7 @@ export default class IsoCameraController {
     const engine = scene.getEngine()
     camera.parent = this.target
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA
-    camera.orthoTop = cameraZoom
+    camera.orthoTop = cameraZoom - 4
     camera.orthoBottom = -cameraZoom
     camera.orthoLeft = -cameraZoom * engine.getScreenAspectRatio()
     camera.orthoRight = cameraZoom * engine.getScreenAspectRatio()
