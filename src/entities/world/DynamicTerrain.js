@@ -34,7 +34,7 @@ export default class DynamicTerrain {
       for (let w = 0; w < mapSubX; w++) {
         const x = (w - mapSubX * 0.25) * 4.0
         const z = (l - mapSubZ * 0.25) * 4.0
-        const y = 0/* noise.simplex2(x / 512, z / 512) + noise.simplex2(x / 64, z / 64) + noise.simplex2(x / 32, z / 32)// altitude
+        const y = 0 /* noise.simplex2(x / 512, z / 512) + noise.simplex2(x / 64, z / 64) + noise.simplex2(x / 32, z / 32)// altitude
 
         if(y > 0.5 ) {
          y = (0.5 + y)  *  y * elevationScale
@@ -58,7 +58,7 @@ export default class DynamicTerrain {
             SPmapData[2].push(xp, yp, zp, 0, ry, 0, sx, sy, sz)
           }
         } */
-       // y =  y > 0.5 ? (0.5 + y)  *  y * elevationScale : (y + noise.simplex2(x / 16, z / 16)) * elevationScale / 8
+        // y =  y > 0.5 ? (0.5 + y)  *  y * elevationScale : (y + noise.simplex2(x / 16, z / 16)) * elevationScale / 8
 
         //console.log(x, z)
         mapData[3 * (l * mapSubX + w)] = x
@@ -76,21 +76,20 @@ export default class DynamicTerrain {
         // objects of the map
         //let index = l * mapSubX + w
         // let's populate randomly
-        
       }
     }
     const terrainMaterial = new BABYLON.StandardMaterial('tm', this.scene)
     terrainMaterial.diffuseTexture = terrainTexture
-    terrainMaterial.ambientColor = new BABYLON.Color3(0,0,0)
-    terrainMaterial.specularColor = new BABYLON.Color3(0,0,0)
+    terrainMaterial.ambientColor = new BABYLON.Color3(0, 0, 0)
+    terrainMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
 
     const rockTexture = new BABYLON.Texture(url, this.scene, false, true, BABYLON.Texture.NEAREST_SAMPLINGMODE)
     rockTexture.uScale = 2 //1 / 8
     rockTexture.vScale = rockTexture.uScale
     const rockMaterial = new BABYLON.StandardMaterial('tm', this.scene)
     rockMaterial.diffuseTexture = rockTexture
-    rockMaterial.ambientColor = new BABYLON.Color3(0,0,0)
-    rockMaterial.specularColor = new BABYLON.Color3(0,0,0)
+    rockMaterial.ambientColor = new BABYLON.Color3(0, 0, 0)
+    rockMaterial.specularColor = new BABYLON.Color3(0, 0, 0)
 
     // SPS to depict the objects the SPMap
     const model1 = BABYLON.MeshBuilder.CreateBox('m1', { size: 1 }, this.scene)
@@ -98,7 +97,7 @@ export default class DynamicTerrain {
     const model3 = BABYLON.MeshBuilder.CreateSphere('m3', { segments: 3 }, this.scene)
     model3.material = rockMaterial
 
-    const sps = new BABYLON.SolidParticleSystem('sps', this.scene, { useModelMaterial: true})
+    const sps = new BABYLON.SolidParticleSystem('sps', this.scene, { useModelMaterial: true })
     const typ1 = sps.addShape(model1, 1000)
     const typ2 = sps.addShape(model2, 1000)
     const typ3 = sps.addShape(model3, 1000)
@@ -110,7 +109,7 @@ export default class DynamicTerrain {
 
     // Dynamic Terrain
     // ===============
-    const terrainSub = 50 // 100 terrain subdivisions
+    const terrainSub = 50
     const params = {
       mapData: mapData, // data map declaration : what data to use ?
       mapSubX: mapSubX, // how are these data stored by rows and columns
@@ -122,9 +121,12 @@ export default class DynamicTerrain {
     }
     this.terrain = new BABYLON.DynamicTerrain('t', params, this.scene)
     this.terrain.mesh.material = terrainMaterial
-    //this.terrain .receiveShadows = true;
-/*     this.terrain.checkCollisions = true;
-    this.terrain.mesh.checkCollisions = true; */
+   /*  this.terrain.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
+      this.terrain.mesh,
+      BABYLON.PhysicsImpostor.MeshImpostor,
+      { mass: 2, friction: 0.0, restitution: 0.3 },
+      this.scene
+    ) */
     this.terrain.update(true)
   }
 }

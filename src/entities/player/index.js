@@ -6,7 +6,7 @@ import playerSpriteMap from '../../assets/maps/player.json'
 import noise from '../../utils/Noise'
 
 export default class Player {
-  constructor(scene, canvas, settings = { speed: 0.1 }) {
+  constructor(scene, canvas, settings = { speed: 2}) {
     const { speed } = settings
     this.scene = scene
     this.canvas = canvas
@@ -44,26 +44,43 @@ export default class Player {
 
   createBody = () => {
     this.body = BABYLON.Mesh.CreateBox('body', 4, this.scene)
-    this.body.position.y = 2
+    this.body.position.y = 4
     this.body.visibility = 0
+    this.body.applyGravity = true
+    this.body.physicsImpostor = new BABYLON.PhysicsImpostor(
+      this.body,
+      BABYLON.PhysicsImpostor.BoxImpostor,
+      { mass: 1, friction: 0.5, restitution: 0 },
+      this.scene
+    )
   }
 
   move = (speed, step) => {
-    const noiseDir = Math.random() > 0.5 ? 1 : -1
-    noise.seed(0.6)
-    const zoom = 16
-    const perlin = noise.simplex2(step / zoom, step / zoom)
-    const noiseX = noiseDir * (perlin > 0.5 ? perlin : 0) * 3
-    const noiseZ = noiseDir * (perlin > 0.5 ? perlin : 0) * 3
+    this.body.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), 0)
+
+    //const distortionCamera = Math.cos(step / 10)
+
+    //const zoom = 64
+    //const distortionWalk = noise.simplex2(step / zoom, step / zoom) //Math.cos(step / 50)
+
+    /*    this.body.rotate(new BABYLON.Vector3(1, 0, 0), distortionCamera * 0.005, BABYLON.Space.LOCAL)
+    this.body.rotate(new BABYLON.Vector3(0, 0, 1), distortionCamera * 0.005, BABYLON.Space.LOCAL) */
+
     if (this.moveController?.direction.x || this.moveController?.direction.z) {
       this.animator.animation = 'walk'
-      this.body.position.x += this.moveController.direction.x * speed + noiseX
-      this.body.position.z += this.moveController.direction.z * speed + noiseZ
+      //const drunkDir = this.moveController.direction //.add(new BABYLON.Vector3(distortionWalk, 0, distortionWalk))
+      /* this.body.position.x += drunkDir.x * speed
+      this.body.position.z += drunkDir.z * speed */
+      if (this.body.physicsImpostor.getLinearVelocity().length() < 8)
+        this.body.physicsImpostor.applyImpulse(
+          this.moveController.direction.scale(speed),
+          this.body.getAbsolutePosition()
+        )
+
+      
+      console.log()
       return false
     }
-
-    this.body.position.x += (this.moveController.direction.x + noiseX) * speed
-    this.body.position.z += (this.moveController.direction.z + noiseZ) * speed
     this.animator.animation = 'idle'
   }
 }

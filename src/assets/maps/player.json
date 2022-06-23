@@ -1,14 +1,24 @@
 {
   "animations": {
     "idle": {
-      "frames": [0, 1, 2, 3],
+      "frames": [0, 1, 2],
       "staggerFrame": 15,
+      "row": 2
+    },
+    "idle-right": {
+      "frames": [0, 1],
+      "staggerFrame": 25,
       "row": 4
+    },
+    "idle-left": {
+      "frames": [0, 1],
+      "staggerFrame": 25,
+      "row": 3
     },
     "walk": {
       "frames": [0, 1, 2],
-      "staggerFrame": 8,
-      "row": 5
+      "staggerFrame": 10,
+      "row": 3
     }
   },
   "columns": 6,

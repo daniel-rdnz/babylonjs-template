@@ -1,6 +1,5 @@
 import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/player'
-import DynamicTerrain from '../entities/world/DynamicTerrain'
 import * as cannon from 'cannon'
 
 export default class GameSceneLoader {
@@ -9,19 +8,40 @@ export default class GameSceneLoader {
   }
 
   configureScene = (scene) => {
-    const withfog = 
-    
-    this.setPhysics(scene)
+    const withfog = this.setPhysics(scene)
     this.setAmbient(scene, { withfog })
 
-    new DynamicTerrain(scene)
-   
-    this.player = new Player(scene, this.canvas, { speed: 0.1 })
+    //new DynamicTerrain(scene)
+    var ground = BABYLON.MeshBuilder.CreateBox('Ground', { width: 100, height: 1, depth: 100 }, scene)
+    ground.position.y = -5.0
+
+    const url = 'assets/images/bath-tile.png'
+    const terrainTexture = new BABYLON.Texture(url, this.scene, false, true, BABYLON.Texture.NEAREST_SAMPLINGMODE)
+    terrainTexture.uScale = 32 
+    terrainTexture.vScale = terrainTexture.uScale
+
+    var groundMat = new BABYLON.StandardMaterial('groundMat', scene)
+    groundMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
+    groundMat.specularColor = new BABYLON.Color3(0, 0, 0)
+    groundMat.backFaceCulling = false
+    ground.material = groundMat
+    ground.receiveShadows = true;
+    groundMat.diffuseTexture = terrainTexture
+    ground.physicsImpostor = new BABYLON.PhysicsImpostor(
+      ground,
+      BABYLON.PhysicsImpostor.BoxImpostor,
+      { mass: 0, friction: 0.3, restitution: 0 },
+      scene
+    )
+    ground.checkCollisions = true
+    this.player = new Player(scene, this.canvas)
+    
+
   }
 
   setPhysics(scene) {
     const cannonPlugin = new CannonJSPlugin(true, 10, cannon)
-    const gravityVector = new Vector3(0, -0.75, 0)
+    const gravityVector = new Vector3(0, -7, 0)
 
     scene.collisionsEnabled = true
     scene.enablePhysics(gravityVector, cannonPlugin)
