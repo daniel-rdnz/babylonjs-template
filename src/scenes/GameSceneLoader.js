@@ -1,6 +1,10 @@
 import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/player'
 import * as cannon from 'cannon'
+//import DynamicTerrain from '../entities/world/DynamicTerrain'
+import SPSterrain from '../entities/world/SPSTerrain'
+import StateMachine from '../entities/stateMachine'
+import {machine, actions} from '../entities/stateMachine/machines/daySystem'
 
 export default class GameSceneLoader {
   constructor(canvas) {
@@ -8,34 +12,17 @@ export default class GameSceneLoader {
   }
 
   configureScene = (scene) => {
-    const withfog = this.setPhysics(scene)
+    const withfog = false
+    this.setPhysics(scene)
+    this.player = new Player(scene, this.canvas)
     this.setAmbient(scene, { withfog })
 
-    //new DynamicTerrain(scene)
-    var ground = BABYLON.MeshBuilder.CreateBox('Ground', { width: 100, height: 1, depth: 100 }, scene)
-    ground.position.y = -5.0
+    const dayStateMachine = new StateMachine()
+    dayStateMachine.createMachine(machine, actions)
+    dayStateMachine.transition({ type: 'BEGIN' })
 
-    const url = 'assets/images/bath-tile.png'
-    const terrainTexture = new BABYLON.Texture(url, this.scene, false, true, BABYLON.Texture.NEAREST_SAMPLINGMODE)
-    terrainTexture.uScale = 32 
-    terrainTexture.vScale = terrainTexture.uScale
-
-    var groundMat = new BABYLON.StandardMaterial('groundMat', scene)
-    groundMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-    groundMat.specularColor = new BABYLON.Color3(0, 0, 0)
-    groundMat.backFaceCulling = false
-    ground.material = groundMat
-    ground.receiveShadows = true;
-    groundMat.diffuseTexture = terrainTexture
-    ground.physicsImpostor = new BABYLON.PhysicsImpostor(
-      ground,
-      BABYLON.PhysicsImpostor.BoxImpostor,
-      { mass: 0, friction: 0.3, restitution: 0 },
-      scene
-    )
-    ground.checkCollisions = true
-    this.player = new Player(scene, this.canvas)
-    
+    const dynamicTerrain = new SPSterrain()
+    dynamicTerrain.create(scene, 8, 101, 101, dayStateMachine)
 
   }
 
@@ -49,11 +36,21 @@ export default class GameSceneLoader {
   }
 
   setAmbient = (scene, { withfog = false }) => {
-    const light = new HemisphericLight('light', new Vector3(0, 1, 0))
-    light.intensity = 0.8
+    const light = new BABYLON.SpotLight(
+      'flashLight',
+      new BABYLON.Vector3(-2, 10, 2),
+      new BABYLON.Vector3(0, -1, 0),
+      BABYLON.Tools.ToRadians(90),
+      16,
+      scene
+    )
+    this.player.addChild(light)
+
+    //light.excludedMeshes.push(this.player.body.getChildMeshes()[0])
     //light.groundColor = new BABYLON.Color3(0.8, 0, 0)
     //light.diffuse = new BABYLON.Color3(0.5, 0.8, 0.6)
 
+    scene.clearColor = new BABYLON.Color3(1, 1, 1)
     if (withfog) {
       // Fog
       scene.fogMode = BABYLON.Scene.FOGMODE_EXP
@@ -107,7 +104,7 @@ export default class GameSceneLoader {
       this.fogEmiter = fountain
 
       scene.fogColor = new BABYLON.Color3(0, 0, 0)
-      //scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3)
+      scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3)
       scene.clearColor = new BABYLON.Color3(0, 0, 0)
       scene.fogDensity = 0.03
 

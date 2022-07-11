@@ -3,10 +3,9 @@ import MouseController from './MouseController'
 import MoveController from './MoveController'
 import Animator from '../animator'
 import playerSpriteMap from '../../assets/maps/player.json'
-import noise from '../../utils/Noise'
 
 export default class Player {
-  constructor(scene, canvas, settings = { speed: 2}) {
+  constructor(scene, canvas, children = [], settings = { speed: 0.05}) {
     const { speed } = settings
     this.scene = scene
     this.canvas = canvas
@@ -16,16 +15,14 @@ export default class Player {
     this.mouseController = null
     this.cameraController = null
     this.animator = null
-    this.initializePlayer()
-    let step = 0
+    this.initializePlayer(children)
 
     scene.registerBeforeRender(() => {
-      step++
-      this.move(speed, step)
+      this.move(speed)
     })
   }
 
-  initializePlayer = () => {
+  initializePlayer = (children) => {
     this.createBody()
     this.animator = new Animator(this.scene, {
       textureUrl: 'assets/images/bath-guy-anim.png',
@@ -34,6 +31,7 @@ export default class Player {
       spriteMap: playerSpriteMap
     })
     this.animator.parent = this.body
+    children.forEach( child => this.addChild(child))
     this.cameraController = new IsoCameraController(this.scene, this.canvas, {
       target: this.body
     })
@@ -44,7 +42,7 @@ export default class Player {
 
   createBody = () => {
     this.body = BABYLON.Mesh.CreateBox('body', 4, this.scene)
-    this.body.position.y = 4
+    this.body.position.y = 6
     this.body.visibility = 0
     this.body.applyGravity = true
     this.body.physicsImpostor = new BABYLON.PhysicsImpostor(
@@ -55,28 +53,28 @@ export default class Player {
     )
   }
 
-  move = (speed, step) => {
+  addChild = (child) => {
+    child.parent = this.body
+  }
+
+  move = (speed) => {
     this.body.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), 0)
-
-    //const distortionCamera = Math.cos(step / 10)
-
-    //const zoom = 64
-    //const distortionWalk = noise.simplex2(step / zoom, step / zoom) //Math.cos(step / 50)
 
     /*    this.body.rotate(new BABYLON.Vector3(1, 0, 0), distortionCamera * 0.005, BABYLON.Space.LOCAL)
     this.body.rotate(new BABYLON.Vector3(0, 0, 1), distortionCamera * 0.005, BABYLON.Space.LOCAL) */
 
     if (this.moveController?.direction.x || this.moveController?.direction.z) {
       this.animator.animation = 'walk'
-      //const drunkDir = this.moveController.direction //.add(new BABYLON.Vector3(distortionWalk, 0, distortionWalk))
-      /* this.body.position.x += drunkDir.x * speed
-      this.body.position.z += drunkDir.z * speed */
-      if (this.body.physicsImpostor.getLinearVelocity().length() < 8)
+      const drunkDir = this.moveController.direction //.add(new BABYLON.Vector3(distortionWalk, 0, distortionWalk))
+      this.body.position.x += drunkDir.x * speed
+      this.body.position.z += drunkDir.z * speed
+
+      /* if (this.body.physicsImpostor.getLinearVelocity().length() < 8)
         this.body.physicsImpostor.applyImpulse(
           this.moveController.direction.scale(speed),
           this.body.getAbsolutePosition()
         )
-
+      */
       
       console.log()
       return false

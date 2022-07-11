@@ -34,6 +34,7 @@ export default class Animator {
     material.useAlphaFromDiffuseTexture = true
     material.diffuseTexture = texture
     material.specularColor = new BABYLON.Color3(0, 0, 0)
+    material.diffuseColor = new BABYLON.Color3(1, 1, 1)
     return material
   }
 

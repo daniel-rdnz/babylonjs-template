@@ -121,12 +121,8 @@ export default class DynamicTerrain {
     }
     this.terrain = new BABYLON.DynamicTerrain('t', params, this.scene)
     this.terrain.mesh.material = terrainMaterial
-   /*  this.terrain.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
-      this.terrain.mesh,
-      BABYLON.PhysicsImpostor.MeshImpostor,
-      { mass: 2, friction: 0.0, restitution: 0.3 },
-      this.scene
-    ) */
+    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
+    light.excludedMeshes.push(this.terrain.mesh);
     this.terrain.update(true)
   }
 }
