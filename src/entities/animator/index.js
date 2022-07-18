@@ -33,7 +33,9 @@ export default class Animator {
     material.transparencyMode = BABYLON.Material.MATERIAL_ALPHATESTANDBLEND
     material.useAlphaFromDiffuseTexture = true
     material.diffuseTexture = texture
-    material.specularColor = new BABYLON.Color3(0, 0, 0)
+    //material.specularColor = new BABYLON.Color3(0, 0, 0)
+    //material.disableLighting = true;
+    material.emissiveColor = BABYLON.Color3.White();
     material.diffuseColor = new BABYLON.Color3(1, 1, 1)
     return material
   }

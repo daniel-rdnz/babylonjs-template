@@ -3,10 +3,10 @@ export const machine = {
   initial: 'startCycle',
   context: {
     day: {
-      waitTo: { time: 2 }
+      waitTo: { time: 0.5 }
     },
     night: {
-      waitTo: { time: 1 }
+      waitTo: { time: 2 }
     }
   },
   states: {

@@ -12,14 +12,14 @@ export default class IsoCameraController {
 
   setCamera = (scene, canvas) => {
     const cameraZoom = 20
-    const camera = new TargetCamera('PlayerCamera', new BABYLON.Vector3(cameraZoom, cameraZoom, -cameraZoom), scene)
+    const camera = new TargetCamera('PlayerCamera', new BABYLON.Vector3(cameraZoom * 2, cameraZoom * 2, -cameraZoom * 2), scene)
     const engine = scene.getEngine()
     camera.parent = this.target
     camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA
-    camera.orthoTop = cameraZoom - 4
+    camera.orthoTop = cameraZoom 
     camera.orthoBottom = -cameraZoom
-    camera.orthoLeft = -cameraZoom * engine.getScreenAspectRatio()
-    camera.orthoRight = cameraZoom * engine.getScreenAspectRatio()
+    camera.orthoLeft = -cameraZoom * engine.getScreenAspectRatio() 
+    camera.orthoRight = cameraZoom * engine.getScreenAspectRatio() 
     camera.setTarget(new BABYLON.Vector3(0, 2, 0))
     camera.attachControl(canvas, true)
 

@@ -1,7 +1,6 @@
-import { HemisphericLight, Vector3, CannonJSPlugin } from 'babylonjs'
+import { Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/player'
 import * as cannon from 'cannon'
-//import DynamicTerrain from '../entities/world/DynamicTerrain'
 import SPSterrain from '../entities/world/SPSTerrain'
 import StateMachine from '../entities/stateMachine'
 import {machine, actions} from '../entities/stateMachine/machines/daySystem'
@@ -38,7 +37,7 @@ export default class GameSceneLoader {
   setAmbient = (scene, { withfog = false }) => {
     const light = new BABYLON.SpotLight(
       'flashLight',
-      new BABYLON.Vector3(-2, 10, 2),
+      new BABYLON.Vector3(0, 10, 0),
       new BABYLON.Vector3(0, -1, 0),
       BABYLON.Tools.ToRadians(90),
       16,
@@ -53,7 +52,7 @@ export default class GameSceneLoader {
     scene.clearColor = new BABYLON.Color3(1, 1, 1)
     if (withfog) {
       // Fog
-      scene.fogMode = BABYLON.Scene.FOGMODE_EXP
+      scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR
       //BABYLON.Scene.FOGMODE_NONE;
       //BABYLON.Scene.FOGMODE_EXP;
       //BABYLON.Scene.FOGMODE_EXP2;

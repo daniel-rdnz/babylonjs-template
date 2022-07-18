@@ -5,7 +5,7 @@ import Animator from '../animator'
 import playerSpriteMap from '../../assets/maps/player.json'
 
 export default class Player {
-  constructor(scene, canvas, children = [], settings = { speed: 0.05}) {
+  constructor(scene, canvas, children = [], settings = { speed: 0.1}) {
     const { speed } = settings
     this.scene = scene
     this.canvas = canvas
