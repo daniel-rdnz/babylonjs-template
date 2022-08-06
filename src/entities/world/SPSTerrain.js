@@ -3,10 +3,15 @@ import noise from '../../utils/Noise'
 import { normalize } from '../../utils/helper'
 
 export default class SPSterrain {
-  constructor() {}
+  constructor() {
+
+  }
 
   create(scene, tileSize, rows, cols, dayStateMachine, sheetHeight = 6, sheetWidth = 6) {
     noise.seed(Math.random() * 15000)
+    const groundHeight = -8
+    const cameraLimit = 80
+    const treesCount = 300
 
     const groundMat = new BABYLON.StandardMaterial('groundMaterial', scene)
     groundMat.specularColor = new BABYLON.Color3(0, 0, 0)
@@ -34,7 +39,7 @@ export default class SPSterrain {
     //SPSForest.billboard = true
 
     SPS.addShape(plane, rows * cols)
-    SPSForest.addShape(forest, 100)
+    SPSForest.addShape(forest, treesCount)
 
     const bodys = []
 
@@ -70,7 +75,7 @@ export default class SPSterrain {
           particle.uvs.z = (u + 1) / sheetWidth - 0.001
           particle.uvs.y = v / sheetHeight + 0.001
           particle.uvs.w = (v + 1) / sheetHeight - 0.001
-          particle.position.y = -8
+          particle.position.y = groundHeight
         }
       }
       SPS.isAlwaysVisible = true
@@ -79,12 +84,12 @@ export default class SPSterrain {
 
     let ixForest = 0
     const setForest = (row, col, position) => {
-      const isBeetweenXLimit = Math.abs(player.position.x - position.x) < 50 && Math.abs(position.x) > 10
-      const isBeetweenZLimit = Math.abs(player.position.z - position.z) < 50 && Math.abs(position.z) > 10
+      const isBeetweenXLimit = Math.abs(player.position.x - position.x) < cameraLimit && Math.abs(position.x) > 10
+      const isBeetweenZLimit = Math.abs(player.position.z - position.z) < cameraLimit && Math.abs(position.z) > 10
       const originalNoise = noise.simplex2(col / 8, row / 8)
       const noiseForest = normalize(originalNoise)
 
-      if (isBeetweenXLimit && isBeetweenZLimit && noiseForest < 0.4) {
+      if (isBeetweenXLimit && isBeetweenZLimit && noiseForest < 0.55) {
         const forestParticle = SPSForest.particles[ixForest]
         const body = bodys[ixForest]
 
@@ -105,17 +110,19 @@ export default class SPSterrain {
         body.position.y = -4
 
         ixForest++
+      } else {
+
       }
     }
 
     SPSForest.initParticles = () => {
       SPSForest.position = player.position
-      for (let ix = 0; ix < 100; ix++) {
+      for (let ix = 0; ix < treesCount; ix++) {
         const forest = SPSForest.particles[ix]
         forest.position.y = -30
         forest.isVisible = false
 
-        const body = BABYLON.Mesh.CreateBox('', 2, scene)
+        const body = BABYLON.Mesh.CreateBox('', 1, scene)
         body.position.y = 15
         body.applyGravity = false
         body.visibility = 0
@@ -137,8 +144,8 @@ export default class SPSterrain {
     SPS.setParticles()
 
     scene.registerBeforeRender(() => {
-      const isBeetweenXLimit = Math.abs(player.position.x - SPSForest.position.x) < 20
-      const isBeetweenZLimit = Math.abs(player.position.z - SPSForest.position.z) < 20
+      const isBeetweenXLimit = Math.abs(player.position.x - SPSForest.position.x) < 10
+      const isBeetweenZLimit = Math.abs(player.position.z - SPSForest.position.z) < 10
 
       if (isBeetweenXLimit && isBeetweenZLimit) {
         return false
@@ -146,7 +153,7 @@ export default class SPSterrain {
 
       ixForest = 0
 
-      for (let ix = 0; ix < 100; ix++) {
+      for (let ix = 0; ix < treesCount; ix++) {
         const forest = SPSForest.particles[ix]
         forest.isVisible = false
       }
@@ -160,7 +167,7 @@ export default class SPSterrain {
       { width: tileSize * rows, height: 1, depth: tileSize * cols },
       scene
     )
-    groundContainer.position.y = -8
+    groundContainer.position.y = groundHeight
     groundContainer.physicsImpostor = new BABYLON.PhysicsImpostor(
       groundContainer,
       BABYLON.PhysicsImpostor.BoxImpostor,

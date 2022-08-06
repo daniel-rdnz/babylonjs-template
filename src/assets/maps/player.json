@@ -2,8 +2,8 @@
   "animations": {
     "idle": {
       "frames": [0, 1, 2],
-      "staggerFrame": 15,
-      "row": 2
+      "staggerFrame": 30,
+      "row": 0
     },
     "idle-right": {
       "frames": [0, 1],
@@ -17,10 +17,10 @@
     },
     "walk": {
       "frames": [0, 1, 2],
-      "staggerFrame": 10,
-      "row": 3
+      "staggerFrame": 20,
+      "row": 1
     }
   },
-  "columns": 6,
-  "rows": 6
+  "columns": 3,
+  "rows": 3
 }

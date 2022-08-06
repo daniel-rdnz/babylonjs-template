@@ -5,8 +5,8 @@ import Animator from '../animator'
 import playerSpriteMap from '../../assets/maps/player.json'
 
 export default class Player {
-  constructor(scene, canvas, children = [], settings = { speed: 0.1}) {
-    const { speed } = settings
+  constructor(scene, canvas, children = [], settings = { speed: 0.1, size: 6},) {
+    const { speed, size } = settings
     this.scene = scene
     this.canvas = canvas
     this.camera = null
@@ -15,19 +15,19 @@ export default class Player {
     this.mouseController = null
     this.cameraController = null
     this.animator = null
-    this.initializePlayer(children)
+    this.initializePlayer(children, size)
 
     scene.registerBeforeRender(() => {
       this.move(speed)
     })
   }
 
-  initializePlayer = (children) => {
-    this.createBody()
+  initializePlayer = (children, size) => {
+    this.createBody(size)
     this.animator = new Animator(this.scene, {
-      textureUrl: 'assets/images/bath-guy-anim.png',
+      textureUrl: 'assets/images/red_hood_character.png',
       name: 'guy',
-      size: 4,
+      size: size,
       spriteMap: playerSpriteMap
     })
     this.animator.parent = this.body
@@ -40,8 +40,8 @@ export default class Player {
     this.moveController = new MoveController(this.body)
   }
 
-  createBody = () => {
-    this.body = BABYLON.Mesh.CreateBox('body', 4, this.scene)
+  createBody = (size) => {
+    this.body = BABYLON.Mesh.CreateBox('body', size, this.scene)
     this.body.position.y = 6
     this.body.visibility = 0
     this.body.applyGravity = true

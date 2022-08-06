@@ -1,5 +1,6 @@
 import { Vector3, CannonJSPlugin } from 'babylonjs'
 import Player from '../entities/player'
+import Wolf from '../entities/enemies/wolf'
 import * as cannon from 'cannon'
 import SPSterrain from '../entities/world/SPSTerrain'
 import StateMachine from '../entities/stateMachine'
@@ -14,6 +15,7 @@ export default class GameSceneLoader {
     const withfog = false
     this.setPhysics(scene)
     this.player = new Player(scene, this.canvas)
+    this.wolf = new Wolf(scene, this.canvas)
     this.setAmbient(scene, { withfog })
 
     const dayStateMachine = new StateMachine()

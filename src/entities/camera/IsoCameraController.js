@@ -1,4 +1,4 @@
-import { TargetCamera, Effect, PostProcess } from 'babylonjs'
+import { TargetCamera } from 'babylonjs'
 
 export default class IsoCameraController {
   constructor(scene, canvas, settings) {
@@ -7,11 +7,10 @@ export default class IsoCameraController {
     this.canvas = canvas
     this.target = target
     this._camera = this.setCamera(this.scene, this.camera)
-    //this.setPixelated(this._camera)
   }
 
   setCamera = (scene, canvas) => {
-    const cameraZoom = 20
+    const cameraZoom = 25
     const camera = new TargetCamera('PlayerCamera', new BABYLON.Vector3(cameraZoom * 2, cameraZoom * 2, -cameraZoom * 2), scene)
     const engine = scene.getEngine()
     camera.parent = this.target
