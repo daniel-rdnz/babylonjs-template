@@ -1,5 +1,5 @@
 import { actions } from '../../utils/Constants'
-import { Vector3 } from 'babylonjs'
+import { Vector3 } from '@babylonjs/core/Maths'
 import ActionMapper from '../../utils/ActionMapper'
 
 export default class MoveController {

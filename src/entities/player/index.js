@@ -3,6 +3,9 @@ import MouseController from './MouseController'
 import MoveController from './MoveController'
 import Animator from '../animator'
 import playerSpriteMap from '../../assets/maps/player.json'
+import { Vector3, Quaternion } from '@babylonjs/core/Maths'
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+
 
 export default class Player {
   constructor(scene, canvas, children = [], settings = { speed: 0.1, size: 6},) {
@@ -41,16 +44,16 @@ export default class Player {
   }
 
   createBody = (size) => {
-    this.body = BABYLON.Mesh.CreateBox('body', size, this.scene)
+    this.body = MeshBuilder.CreateBox('body', {size}, this.scene)
     this.body.position.y = 6
     this.body.visibility = 0
     this.body.applyGravity = true
-    this.body.physicsImpostor = new BABYLON.PhysicsImpostor(
+/*     this.body.physicsImpostor = new PhysicsImpostor(
       this.body,
-      BABYLON.PhysicsImpostor.BoxImpostor,
+      PhysicsImpostor.BoxImpostor,
       { mass: 1, friction: 0.5, restitution: 0 },
       this.scene
-    )
+    ) */
   }
 
   addChild = (child) => {
@@ -58,7 +61,7 @@ export default class Player {
   }
 
   move = (speed) => {
-    this.body.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(0, 1, 0), 0)
+    this.body.rotationQuaternion = Quaternion.RotationAxis(new Vector3(0, 1, 0), 0)
 
     /*    this.body.rotate(new BABYLON.Vector3(1, 0, 0), distortionCamera * 0.005, BABYLON.Space.LOCAL)
     this.body.rotate(new BABYLON.Vector3(0, 0, 1), distortionCamera * 0.005, BABYLON.Space.LOCAL) */
@@ -69,12 +72,6 @@ export default class Player {
       this.body.position.x += drunkDir.x * speed
       this.body.position.z += drunkDir.z * speed
 
-      /* if (this.body.physicsImpostor.getLinearVelocity().length() < 8)
-        this.body.physicsImpostor.applyImpulse(
-          this.moveController.direction.scale(speed),
-          this.body.getAbsolutePosition()
-        )
-      */
       
       console.log()
       return false

@@ -51,6 +51,9 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
@@ -74,5 +77,6 @@ module.exports = {
         test: /\.js(\?.*)?$/i,
       }),
     ],
-  }
+  },
+  devtool: "source-map",
 };

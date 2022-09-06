@@ -1,0 +1,26 @@
+{
+  "animations": {
+    "idle": {
+      "frames": [0, 1, 2],
+      "staggerFrame": 30,
+      "row": 0
+    },
+    "idle-right": {
+      "frames": [0, 1],
+      "staggerFrame": 25,
+      "row": 4
+    },
+    "idle-left": {
+      "frames": [0, 1],
+      "staggerFrame": 25,
+      "row": 3
+    },
+    "walk": {
+      "frames": [0, 1, 2],
+      "staggerFrame": 20,
+      "row": 1
+    }
+  },
+  "columns": 3,
+  "rows": 3
+}

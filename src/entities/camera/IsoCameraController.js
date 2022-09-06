@@ -1,4 +1,5 @@
-import { TargetCamera } from 'babylonjs'
+import { TargetCamera } from '@babylonjs/core/Cameras/targetCamera'
+import { Vector3 } from '@babylonjs/core/Maths'
 
 export default class IsoCameraController {
   constructor(scene, canvas, settings) {
@@ -10,16 +11,16 @@ export default class IsoCameraController {
   }
 
   setCamera = (scene, canvas) => {
-    const cameraZoom = 25
-    const camera = new TargetCamera('PlayerCamera', new BABYLON.Vector3(cameraZoom * 2, cameraZoom * 2, -cameraZoom * 2), scene)
+    const cameraZoom = 35
+    const camera = new TargetCamera('PlayerCamera', new Vector3(cameraZoom, cameraZoom, -cameraZoom), scene)
     const engine = scene.getEngine()
     camera.parent = this.target
-    camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA
+    camera.mode = 1
     camera.orthoTop = cameraZoom 
     camera.orthoBottom = -cameraZoom
     camera.orthoLeft = -cameraZoom * engine.getScreenAspectRatio() 
     camera.orthoRight = cameraZoom * engine.getScreenAspectRatio() 
-    camera.setTarget(new BABYLON.Vector3(0, 2, 0))
+    camera.setTarget(new Vector3(0, -1, 0))
     camera.attachControl(canvas, true)
 
 
