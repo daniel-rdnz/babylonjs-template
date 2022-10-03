@@ -6,7 +6,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    "bundle": "./src/game.js",
+    "bundle": "./src/index.js",
     "bundle.min": "./src/game.js",
   },
   output: {
@@ -15,6 +15,7 @@ module.exports = {
   },
   devServer: {
     compress: true,
+    //host: '192.168.1.9',
     port: 9000,
   },
   resolve: {

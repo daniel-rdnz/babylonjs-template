@@ -2,14 +2,14 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Color3, Vector3 } from '@babylonjs/core/Maths'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
-import { normalize } from '../../utils/helper'
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
 import {SolidParticleSystem} from '@babylonjs/core/Particles/solidParticleSystem'
+import { Node } from '@babylonjs/core/node'
 import noise from '../../utils/Noise'
 
-export default class SPSterrain {
+export default class SPSterrain extends Node {
   constructor() {
-
+    super()
   }
 
   create(scene, tileSize, rows, cols, dayStateMachine, sheetHeight = 6, sheetWidth = 6) {
@@ -21,7 +21,7 @@ export default class SPSterrain {
     groundMat.diffuseColor = new Color3(1, 1, 1)
 
     const groundTexture = new Texture(
-      './assets/images/red_hood_tile.png',
+      './assets/images/assets.png',
       scene,
       false,
       true,
@@ -36,6 +36,8 @@ export default class SPSterrain {
     const plane = MeshBuilder.CreateGround('plane', { width: tileSize, height: tileSize })
 
     const SPS = new SolidParticleSystem('SPS', scene, { isPickable: true })
+    SPS.parent = this
+    console.log(SPS)
     //SPSForest.billboard = true
 
     SPS.addShape(plane, rows * cols)
@@ -48,8 +50,6 @@ export default class SPSterrain {
 
     plane.dispose()
 
-    const player = scene.getNodeByName('guy').parent
-
     SPS.initParticles = () => {
       for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
@@ -58,7 +58,7 @@ export default class SPSterrain {
           particle.position.x = (row - rows / 2) * tileSize - tileSize * 0.5
           particle.position.z = (col - cols / 2) * tileSize + tileSize * 1.5
 
-          const u = Math.floor(normalize(noise.simplex2(col / 16, row / 16)) * 2)
+          const u = 0//Math.floor(normalize(noise.simplex2(col / 16, row / 16)) * 2)
           const v = 5 //Math.floor(normalize(noise.simplex2(col / 16, row / 16)) * 2) + 4
 
           particle.uvs.x = u / sheetWidth + 0.001

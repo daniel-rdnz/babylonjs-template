@@ -29,9 +29,7 @@ export default class MouseController {
           this.canvas.requestPointerLock()
         }
       }
-      //continue with shooting requests or whatever :P
-      //evt === 1 (mouse wheel click (not scrolling))
-      //evt === 2 (right mouse click)
+
     }
   }
 

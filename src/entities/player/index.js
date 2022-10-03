@@ -1,4 +1,3 @@
-import IsoCameraController from '../camera/IsoCameraController'
 import MouseController from './MouseController'
 import MoveController from './MoveController'
 import Animator from '../animator'
@@ -28,17 +27,14 @@ export default class Player {
   initializePlayer = (children, size) => {
     this.createBody(size)
     this.animator = new Animator(this.scene, {
-      textureUrl: 'assets/images/red_hood_character.png',
+      textureUrl: 'assets/images/assets.png',
       name: 'guy',
       size: size,
       spriteMap: playerSpriteMap
     })
     this.animator.parent = this.body
     children.forEach( child => this.addChild(child))
-    this.cameraController = new IsoCameraController(this.scene, this.canvas, {
-      target: this.body
-    })
-    this.camera = this.cameraController.camera
+    
     this.mouseController = new MouseController(this.scene, this.canvas)
     this.moveController = new MoveController(this.body)
   }

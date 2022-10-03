@@ -3,18 +3,14 @@ import { Vector3 } from '@babylonjs/core/Maths'
 
 export default class IsoCameraController {
   constructor(scene, canvas, settings) {
-    const { target } = settings
-    this.scene = scene
-    this.canvas = canvas
-    this.target = target
-    this._camera = this.setCamera(this.scene, this.camera)
+    const { target, cameraZoom } = settings
+    this._camera = this.setCamera(scene, canvas, cameraZoom, target)
   }
 
-  setCamera = (scene, canvas) => {
-    const cameraZoom = 35
+  setCamera = (scene, canvas, cameraZoom, target) => {
     const camera = new TargetCamera('PlayerCamera', new Vector3(cameraZoom, cameraZoom, -cameraZoom), scene)
     const engine = scene.getEngine()
-    camera.parent = this.target
+    camera.parent = target
     camera.mode = 1
     camera.orthoTop = cameraZoom 
     camera.orthoBottom = -cameraZoom
@@ -31,6 +27,18 @@ export default class IsoCameraController {
 
 
     return camera
+  }
+
+  set zoom(zoom) {
+    const engine = this.camera.getScene().getEngine()
+    this.camera.orthoTop = zoom 
+    this.camera.orthoBottom = -zoom
+    this.camera.orthoLeft = -zoom * engine.getScreenAspectRatio() 
+    this.camera.orthoRight = zoom * engine.getScreenAspectRatio() 
+  }
+
+  get zoom() {
+    return this.camera.orthoTop
   }
 
   get camera() {

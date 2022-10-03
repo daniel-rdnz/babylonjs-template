@@ -1,9 +1,9 @@
 {
   "animations": {
     "idle": {
-      "frames": [0, 1, 2],
+      "frames": [1],
       "staggerFrame": 30,
-      "row": 0
+      "row": 5
     },
     "idle-right": {
       "frames": [0, 1],
@@ -21,6 +21,6 @@
       "row": 1
     }
   },
-  "columns": 3,
-  "rows": 3
+  "columns": 6,
+  "rows": 6
 }
