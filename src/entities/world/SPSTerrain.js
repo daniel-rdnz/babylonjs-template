@@ -30,21 +30,17 @@ export default class SPSterrain extends Node {
     groundTexture.hasAlpha = true
     groundMat.diffuseTexture = groundTexture
 
-    const light = new HemisphericLight('light', new Vector3(0, 1, 0), this.scene)
     const nightLight = new HemisphericLight('light', new Vector3(0, 1, 0), this.scene)
 
     const plane = MeshBuilder.CreateGround('plane', { width: tileSize, height: tileSize })
 
     const SPS = new SolidParticleSystem('SPS', scene, { isPickable: true })
     SPS.parent = this
-    console.log(SPS)
-    //SPSForest.billboard = true
 
     SPS.addShape(plane, rows * cols)
 
     const mesh = SPS.buildMesh()
 
-    nightLight.excludedMeshes.push(mesh)
     nightLight.intensity = 0
     mesh.material = groundMat
 

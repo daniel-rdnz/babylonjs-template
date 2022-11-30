@@ -1,34 +1,33 @@
 import { actions } from '../../utils/Constants'
 import { Vector3 } from '@babylonjs/core/Maths'
+import { Animation } from '@babylonjs/core/Animations'
 import ActionMapper from '../../utils/ActionMapper'
 
 export default class MoveController {
-  constructor() {
+  constructor(body, stepMagnitud = 24) {
     this._direction = new Vector3(0, 0, 0)
     this.actionStrategy = null
+    this.body = body
     this.setActionStrategy()
     this.setEventListeners()
-  }
-
-  onKeyDown = (event) => {
-    const { keyCode } = event
-    this.processKeyAction({ keyCode, moveMagnitud: 1 })
+    this.forwardAxis = 'z'
+    this.stepMagnitud = stepMagnitud
+    this.isMoveComplete = true;
   }
 
   onKeyUp = (event) => {
     const { keyCode } = event
-    this.processKeyAction({ keyCode, moveMagnitud: 0 })
+    this.processKeyAction({ keyCode, moveMagnitud: 1 })
   }
 
   setEventListeners = () => {
-    document.addEventListener('keydown', this.onKeyDown, false)
-    document.addEventListener('keyup', this.onKeyUp, false)
+    document.addEventListener('keydown', this.onKeyUp, false)
   }
 
   setActionStrategy() {
     this.actionStrategy = {
-      [actions.UP]: (moveMagnitud) => this.moveFoward(-moveMagnitud),
-      [actions.DOWN]: (moveMagnitud) => this.moveFoward(moveMagnitud),
+      [actions.UP]: (moveMagnitud) => this.moveForward(moveMagnitud),
+      [actions.DOWN]: (moveMagnitud) => this.moveForward(-moveMagnitud),
       [actions.LEFT]: (moveMagnitud) => this.moveLateral(-moveMagnitud),
       [actions.RIGHT]: (moveMagnitud) => this.moveLateral(moveMagnitud)
     }
@@ -44,15 +43,48 @@ export default class MoveController {
     this.actionStrategy[action](moveMagnitud)
   }
 
-  moveFoward(moveMagnitud) {
-    this._direction.x = moveMagnitud
+  moveForward(moveMagnitud) {
+    if(!this.isMoveComplete) {
+      return
+    }
+    this.isMoveComplete = false
+    const origin = this.body.position?.[this.forwardAxis]
+    const direction = this.body.forward[this.forwardAxis]
+    Animation.CreateAndStartAnimation(
+      'moveAnimation',
+      this.body,
+      `position.${this.forwardAxis}`,
+      60,
+      30,
+      origin,
+      origin + (24 * direction * moveMagnitud),
+      Animation.ANIMATIONLOOPMODE_CONSTANT,
+      undefined,
+      () => {
+        this.isMoveComplete = true
+      }
+    )
   }
 
   moveLateral(moveMagnitud) {
-    this._direction.z = moveMagnitud
-  }
-
-  get direction() {
-    return this._direction.normalize()
+    if(!this.isMoveComplete) {
+      return
+    }
+    this.isMoveComplete = false
+    Animation.CreateAndStartAnimation(
+      'rotationAnimation',
+      this.body,
+      'rotation.y',
+      60,
+      30,
+      this.body.rotation.y,
+      this.body.rotation.y + (Math.PI / 2) * moveMagnitud,
+      Animation.ANIMATIONLOOPMODE_CONSTANT,
+      undefined,
+      () => {
+        this.forwardAxis = this.forwardAxis === 'x' ? 'z' :'x'
+        this.isMoveComplete = true
+      }
+    )
   }
 }
